@@ -1,10 +1,12 @@
-use std::{collections::HashSet, usize};
+use std::collections::HashSet;
+
+use crate::utils::adjacents;
 
 pub fn part1() -> String {
     let path = "input/day3.txt";
     let input = std::fs::read_to_string(path).unwrap();
 
-    let mut board = vec![vec![]];
+    let mut board = vec![];
 
     for line in input.lines() {
         let mut line_vec = vec![];
@@ -41,25 +43,12 @@ pub fn part1() -> String {
     count_numbers(&mut board).to_string()
 }
 
-fn adjacents(i: usize, j: usize, board: &Vec<Vec<i32>>) -> Vec<(usize, usize)> {
-    let mut adjacents = Vec::new();
-    for x in i.saturating_sub(1)..=i + 1 {
-        for y in j.saturating_sub(1)..=j + 1 {
-            if (x != i || y != j) && x < board.len() && y < board[x].len() {
-                adjacents.push((x, y));
-            }
-        }
-    }
-
-    adjacents
-}
-
 fn count_numbers(input: &mut Vec<Vec<i32>>) -> i32 {
     let mut count = 0;
     for i in 0..input.len() {
         for j in 0..input[i].len() {
             if input[i][j] > 0 {
-                for (x, y) in adjacents(i, j, input) {
+                for (x, y) in adjacents(i, j, input.len(), input[i].len()) {
                     if input[x][y] == -1 {
                         count += input[i][j];
                         let mut k = 0;
@@ -81,7 +70,7 @@ pub fn part2() -> String {
     let path = "input/day3.txt";
     let input = std::fs::read_to_string(path).unwrap();
 
-    let mut board = vec![vec![]];
+    let mut board = vec![];
 
     for line in input.lines() {
         let mut line_vec = vec![];
@@ -125,7 +114,7 @@ fn count_numbers2(input: &mut Vec<Vec<i32>>) -> i32 {
         for j in 0..input[i].len() {
             if input[i][j] == -1 {
                 let mut found = HashSet::new();
-                for (x, y) in adjacents(i, j, input) {
+                for (x, y) in adjacents(i, j, input.len(), input[i].len()) {
                     if input[x][y] > 0 {
                         found.insert(input[x][y]);
                     }
