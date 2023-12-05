@@ -10,31 +10,27 @@ pub fn part1() -> String {
                     .map(|s| s.trim().parse::<u64>().unwrap())
                     .collect::<Vec<u64>>();
                 (mapped, seeds)
+            } else if line.is_empty() {
+                (mapped, unmapped)
+            } else if line.chars().collect::<Vec<char>>()[0].is_alphabetic() {
+                mapped.append(&mut unmapped.clone());
+                (vec![], mapped)
             } else {
-                if line.is_empty() {
-                    (mapped, unmapped)
-                } else {
-                    if line.chars().collect::<Vec<char>>()[0].is_alphabetic() {
-                        mapped.append(&mut unmapped.clone());
-                        (vec![], mapped)
-                    } else {
-                        let range = line
-                            .split(' ')
-                            .map(|s| s.trim().parse::<u64>().unwrap())
-                            .collect::<Vec<u64>>();
-                        let mut to_remove = vec![];
-                        for (i, unmapped_elt) in unmapped.iter().enumerate() {
-                            if *unmapped_elt >= range[1] && *unmapped_elt < range[1] + range[2] {
-                                mapped.push(range[0] + unmapped_elt - range[1]);
-                                to_remove.push(i);
-                            }
-                        }
-                        for i in to_remove.iter().rev() {
-                            unmapped.remove(*i);
-                        }
-                        (mapped, unmapped)
+                let range = line
+                    .split(' ')
+                    .map(|s| s.trim().parse::<u64>().unwrap())
+                    .collect::<Vec<u64>>();
+                let mut to_remove = vec![];
+                for (i, unmapped_elt) in unmapped.iter().enumerate() {
+                    if *unmapped_elt >= range[1] && *unmapped_elt < range[1] + range[2] {
+                        mapped.push(range[0] + unmapped_elt - range[1]);
+                        to_remove.push(i);
                     }
                 }
+                for i in to_remove.iter().rev() {
+                    unmapped.remove(*i);
+                }
+                (mapped, unmapped)
             }
         },
     );
@@ -59,18 +55,16 @@ pub fn part2() -> String {
                 for i in 0..seeds.len() / 2 {
                     initial_seed_ranges.push((seeds[2 * i], seeds[2 * i + 1]));
                 }
-            } else {
-                if !line.is_empty() {
-                    if line.chars().collect::<Vec<char>>()[0].is_alphabetic() {
-                        maps.push(vec![]);
-                    } else {
-                        let range = line
-                            .split(' ')
-                            .map(|s| s.trim().parse::<u64>().unwrap())
-                            .collect::<Vec<u64>>();
-                        let maps_len = maps.len();
-                        maps[maps_len - 1].push(range);
-                    }
+            } else if !line.is_empty() {
+                if line.chars().collect::<Vec<char>>()[0].is_alphabetic() {
+                    maps.push(vec![]);
+                } else {
+                    let range = line
+                        .split(' ')
+                        .map(|s| s.trim().parse::<u64>().unwrap())
+                        .collect::<Vec<u64>>();
+                    let maps_len = maps.len();
+                    maps[maps_len - 1].push(range);
                 }
             }
         });
