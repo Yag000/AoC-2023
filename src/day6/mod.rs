@@ -14,13 +14,7 @@ pub fn part1() -> String {
     let mut value = 1;
     for i in 0..number {
         value *= (1..(values[0][i]))
-            .filter_map(|v| {
-                if v * (values[0][i] - v) > values[1][i] {
-                    Some(v)
-                } else {
-                    None
-                }
-            })
+            .filter(|v| v * (values[0][i] - v) > values[1][i])
             .count();
     }
     value.to_string()
